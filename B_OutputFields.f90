@@ -1,17 +1,26 @@
-subroutine B_OutputFields(IO, NI, NJ, X, Y, P, GradP, gradPError)
+subroutine output_fields(io, NI, NJ, x, y, p, grad, graderror, v, div, diverror, rot, roterror)
+implicit none
 
-real, dimension(NI, NJ) :: X, Y
-real, dimension(0:NI, 0:NJ) :: P
-real, dimension(0:NI, 0:NJ, 2) :: GradP, gradPError
+integer 							:: io, NI, NJ
+real(8), dimension(NI, NJ) 			:: x, y
+real(8), dimension(0:NI, 0:NJ) 		:: p, div, diverror, rot, roterror
+real(8), dimension(0:NI, 0:NJ, 2) 	:: grad, graderror, v
 
-write(IO, *) 'VARIABLES = "X", "Y", "P", "GradPx", "GradPy", "GradPx_err", "GradPy_err"'
-write(IO, *) 'ZONE I=',NI, ', J=',NJ, ', DATAPACKING=BLOCK, VARLOCATION=([3-20]=CELLCENTERED)'
-write(IO, '(100F14.7)') X(1:NI, 1:NJ) 
-write(IO, '(100F14.7)') Y(1:NI, 1:NJ)
-write(IO, '(100F14.7)') P(1:NI-1, 1:NJ-1)
-write(IO, '(100F25.17)') GradP(1:NI-1, 1:NJ-1, 1)
-write(IO, '(100F25.17)') GradP(1:NI-1, 1:NJ-1, 2)
-write(IO, '(100F25.17)') gradPError(1:NI-1, 1:NJ-1, 1)
-write(IO, '(100F25.17)') gradPError(1:NI-1, 1:NJ-1, 2)
+write(io, *) 'VARIABLES = "X", "Y", "P", "Vx", "Vy", "GradPx", "GradPy", "DivV", "RotV", &
+						  "DivV_err", "RotV_err", "GradPx_err", "GradPy_err"'
+write(io, *) 'ZONE I=', NI, ', J=', NJ, ', DATAPACKING=BLOCK, VARLOCATION=([3-20]=CELLCENTERED)'
+write(io, '(100F14.7)') x(1:NI, 1:NJ) 
+write(io, '(100F14.7)') y(1:NI, 1:NJ)
+write(io, '(100F14.7)') p(1:NI-1, 1:NJ-1)
+write(io, '(100F14.7)') v(1:NI-1, 1:NJ-1, 1)
+write(io, '(100F14.7)') v(1:NI-1, 1:NJ-1, 2)
+write(io, '(100F25.17)') grad(1:NI-1, 1:NJ-1, 1)
+write(io, '(100F25.17)') grad(1:NI-1, 1:NJ-1, 2)
+write(io, '(100F25.17)') div(1:NI-1, 1:NJ-1)
+write(io, '(100F25.17)') rot(1:NI-1, 1:NJ-1)
+write(io, '(100F25.17)') diverror(1:NI-1, 1:NJ-1)
+write(io, '(100F25.17)') roterror(1:NI-1, 1:NJ-1)
+write(io, '(100F25.17)') graderror(1:NI-1, 1:NJ-1, 1)
+write(io, '(100F25.17)') graderror(1:NI-1, 1:NJ-1, 2)
 
-end Subroutine 
+end Subroutine

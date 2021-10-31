@@ -1,1 +1,3 @@
-base.msh
+base.msh			! mesh-file
+15					! number of iteration for Green-Gauss method
+1					! choice of the gradient computation scheme: 1 - Green-Gauss scheme, 2 - Least Square scheme
