@@ -4,6 +4,8 @@ implicit none
 
 real(8) :: x, y
 
+!pressure = x + y
+!pressure = x**2.0 + y**2.0
 pressure = x**3.0 + y**3.0
 
 end function
@@ -16,9 +18,11 @@ integer :: coord
 real(8) :: x, y
 
 if (coord == 1) then
-	velocity = 1 + x * y**2.0
+	!velocity = 1.0 + x
+	velocity = - y * x
 else
-	velocity = 1 + y * x
+	!velocity = 1.0 + y
+	velocity = x * y
 end if
 
 end function 
@@ -31,20 +35,31 @@ integer :: coord
 real(8) :: x, y
 
 if (coord == 1) then
+	!calcgrad_exact = 1.0
+	!calcgrad_exact = 2.0 * x
 	calcgrad_exact = 3.0 * x**2.0
 else
+	!calcgrad_exact = 1.0
+	!calcgrad_exact = 2.0 * y
 	calcgrad_exact = 3.0 * y**2.0
 end if
 
 end function
 
 ! Calculation of exact values of divergency
-real(8) function calcdiv_exact(x, y)
+real(8) function calcdiv_exact(x, y, p, v, grad, mode)
 implicit none
 
-real(8) :: x, y
+integer 				:: mode
+real(8) 				:: x, y, p
+real(8), dimension(2) 	:: v, grad
 
-calcdiv_exact = y**2.0 + x
+select case (mode)
+	case(0)
+		calcdiv_exact = x - y
+	case default
+		calcdiv_exact = dot_product(v, grad) + p * (x + y) ! V * gradP + P * divV
+end select
 
 end function
 
@@ -54,7 +69,19 @@ implicit none
 
 real(8) :: x, y
 
-calcrot_exact = y - 2.0 * x * y ! dVy/dx - dVx/dy
+calcrot_exact = y + x ! dVy/dx - dVx/dy
+
+end function
+
+! Calculation of exact values of laplacian
+real(8) function calclaplacian_exact(x, y)
+implicit none
+
+real(8) :: x, y
+
+!calclaplacian_exact = 0.0
+!calclaplacian_exact = 4.0
+calclaplacian_exact = 6.0 * x + 6.0 * y
 
 end function
 
@@ -84,7 +111,7 @@ real(8), dimension(0:NI, 0:NJ) 	:: div, divexact, diverror
 
 do j = 0, NJ
 	do i = 0, NI
-		diverror(i, j) = abs(div(i, j) - divexact(i, j)) / divexact(i, j)
+		diverror(i, j) = abs(div(i, j) - divexact(i, j)) / abs(divexact(i, j))
 	end do
 end do
 
@@ -101,11 +128,28 @@ real(8), dimension(0:NI, 0:NJ) 	:: rot, rotexact, roterror
 
 do j = 0, NJ
 	do i = 0, NI
-		roterror(i, j) = abs(rot(i, j) - rotexact(i, j)) / rotexact(i, j)
+		roterror(i, j) = abs(rot(i, j) - rotexact(i, j)) / abs(rotexact(i, j))
 	end do
 end do
 
 print*, 'Max Error of Rotor =', maxval(roterror(1:NI-1, 1:NJ-1))
+
+end subroutine
+
+!Calculation of error of laplacian
+subroutine calclaplacian_error(NI, NJ, laplacian, laplacianexact, laplacianerror)
+implicit none
+
+integer 						:: i, j, NI, NJ
+real(8), dimension(0:NI, 0:NJ) 	:: laplacian, laplacianexact, laplacianerror
+
+do j = 0, NJ
+	do i = 0, NI
+		laplacianerror(i, j) = abs(laplacian(i, j) - laplacianexact(i, j)) / abs(laplacianexact(i, j))
+	end do
+end do
+
+print*, 'Max Error of Laplacian', maxval(laplacianerror(1:NI-1, 1:NJ-1)) 
 
 end subroutine
 

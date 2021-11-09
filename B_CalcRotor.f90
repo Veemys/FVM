@@ -35,4 +35,4 @@ do j = 1, NJ - 1
 	end do
 end do
 
-end Subroutine
+end subroutine

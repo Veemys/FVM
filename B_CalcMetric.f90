@@ -50,7 +50,6 @@ do j = 1, NJ - 1
 	end do
 end do
 
-
 !=== CELL CENTERS ===
 ! FOR INNER CELLS: CENTER OF CONTOUR (sum of FaceCenter*FaceLength/Perimeter)
 do j = 1, NJ - 1

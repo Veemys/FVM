@@ -1,3 +1,4 @@
 base.msh			! mesh-file
 15					! number of iteration for Green-Gauss method
 1					! choice of the gradient computation scheme: 1 - Green-Gauss scheme, 2 - Least Square scheme
+1					! mode for divergency computation: 0 - divV, 1 - central, 2 - 1st upwind, 3 - 2nd upwind

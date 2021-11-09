@@ -41,7 +41,7 @@ do j = 1, NJ - 1
 	end do
 end do
 
-end Subroutine
+end subroutine
 
 ! Calculation of the gradient field via least square method
 subroutine calcgrad_leastsquare(NI, NJ, p, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
@@ -87,7 +87,7 @@ end do
 
 end subroutine
 
-! Causs-Seidel method
+! Gauss-Seidel method
 subroutine gaussseidel_method(n, A, b, eps, x)
 implicit none
 
