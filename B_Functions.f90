@@ -5,8 +5,8 @@ implicit none
 real(8) :: x, y
 
 !pressure = x + y
-!pressure = x**2.0 + y**2.0
-pressure = x**3.0 + y**3.0
+pressure = x**2.0 + y**2.0
+!pressure = x**3.0 + y**3.0
 
 end function
 
@@ -18,11 +18,15 @@ integer :: coord
 real(8) :: x, y
 
 if (coord == 1) then
+	!velocity = 1.0
 	!velocity = 1.0 + x
-	velocity = - y * x
+	velocity = - y
+	!velocity = - y * x
 else
+	!velocity = 1.0
 	!velocity = 1.0 + y
-	velocity = x * y
+	velocity = x
+	!velocity = x * y
 end if
 
 end function 
@@ -36,12 +40,12 @@ real(8) :: x, y
 
 if (coord == 1) then
 	!calcgrad_exact = 1.0
-	!calcgrad_exact = 2.0 * x
-	calcgrad_exact = 3.0 * x**2.0
+	calcgrad_exact = 2.0 * x
+	!calcgrad_exact = 3.0 * x**2.0
 else
 	!calcgrad_exact = 1.0
-	!calcgrad_exact = 2.0 * y
-	calcgrad_exact = 3.0 * y**2.0
+	calcgrad_exact = 2.0 * y
+	!calcgrad_exact = 3.0 * y**2.0
 end if
 
 end function
@@ -56,9 +60,9 @@ real(8), dimension(2) 	:: v, grad
 
 select case (mode)
 	case(0)
-		calcdiv_exact = x - y
+		calcdiv_exact = 1e-15
 	case default
-		calcdiv_exact = dot_product(v, grad) + p * (x + y) ! V * gradP + P * divV
+		calcdiv_exact = dot_product(v, grad) + p * 1e-15 ! V * gradP + P * divV
 end select
 
 end function
@@ -69,7 +73,7 @@ implicit none
 
 real(8) :: x, y
 
-calcrot_exact = y + x ! dVy/dx - dVx/dy
+calcrot_exact = 2.0 ! dVy/dx - dVx/dy
 
 end function
 
@@ -81,7 +85,7 @@ real(8) :: x, y
 
 !calclaplacian_exact = 0.0
 !calclaplacian_exact = 4.0
-calclaplacian_exact = 6.0 * x + 6.0 * y
+calclaplacian_exact = 4.0
 
 end function
 
