@@ -25,4 +25,19 @@ write(io, '(100F25.17)') laplacianerror(1:NI-1, 1:NJ-1)
 write(io, '(100F25.17)') graderror(1:NI-1, 1:NJ-1, 1)
 write(io, '(100F25.17)') graderror(1:NI-1, 1:NJ-1, 2)
 
-end Subroutine
+end subroutine
+
+! out temp field
+subroutine output_temperature(io, ni, nj, x, y, t)
+implicit none
+
+integer								:: io, i, j, ni, nj
+real(8), dimension(0:ni, 0:nj) 		:: x, y, t
+
+write(io, *) 'VARIABLES = "X", "Y", "T"'
+write(io, *) 'ZONE I=', ni, ', J=', nj, ', DATAPACKING=BLOCK, VARLOCATION=([3-20]=CELLCENTERED)'
+write(io, '(100F14.7)') x(1:ni, 1:nj) 
+write(io, '(100F14.7)') y(1:ni, 1:nj)
+write(io, '(100F14.7)') t(1:ni-1, 1:nj-1)
+
+end subroutine

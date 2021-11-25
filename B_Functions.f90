@@ -98,7 +98,7 @@ real(8), dimension(0:NI, 0:NJ, 2)	:: grad, gradexact, graderror
 
 do j = 0, NJ
 	do i = 0, NI
-		graderror(i, j, :) = abs(grad(i, j, :) - gradexact(i, j, :)) / maxval(gradexact(i, j, :))
+		graderror(i, j, :) = 1!abs(grad(i, j, :) - gradexact(i, j, :)) / maxval(gradexact(i, j, :))
 	end do
 end do
 
@@ -115,7 +115,7 @@ real(8), dimension(0:NI, 0:NJ) 	:: div, divexact, diverror
 
 do j = 0, NJ
 	do i = 0, NI
-		diverror(i, j) = abs(div(i, j) - divexact(i, j)) / abs(divexact(i, j))
+		diverror(i, j) = 1!abs(div(i, j) - divexact(i, j)) / abs(divexact(i, j))
 	end do
 end do
 
@@ -132,7 +132,7 @@ real(8), dimension(0:NI, 0:NJ) 	:: rot, rotexact, roterror
 
 do j = 0, NJ
 	do i = 0, NI
-		roterror(i, j) = abs(rot(i, j) - rotexact(i, j)) / abs(rotexact(i, j))
+		roterror(i, j) = 1!abs(rot(i, j) - rotexact(i, j)) / abs(rotexact(i, j))
 	end do
 end do
 
@@ -149,11 +149,11 @@ real(8), dimension(0:NI, 0:NJ) 	:: laplacian, laplacianexact, laplacianerror
 
 do j = 0, NJ
 	do i = 0, NI
-		laplacianerror(i, j) = abs(laplacian(i, j) - laplacianexact(i, j)) / abs(laplacianexact(i, j))
+		laplacianerror(i, j) = 1!abs(laplacian(i, j) - laplacianexact(i, j)) / abs(laplacianexact(i, j))
 	end do
 end do
 
-print*, 'Max Error of Laplacian', maxval(laplacianerror(1:NI-1, 1:NJ-1)) 
+print*, 'Max Error of Laplacian =', maxval(laplacianerror(1:NI-1, 1:NJ-1)) 
 
 end subroutine
 

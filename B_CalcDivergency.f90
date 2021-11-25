@@ -28,6 +28,7 @@ do j = 1, NJ - 1
 			vface(2) = linear_interpolation(d1, d2, v(i, j, 2), v(icell, jcell, 2))
 			
 			select case (mode)
+			
 				case (0) 																				! Velocity divergency
 				
 					div(i, j) = div(i, j) + dot_product(vface(:), vectorface_cell(iface, :))
