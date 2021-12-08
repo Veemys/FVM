@@ -19,7 +19,7 @@ read(io, *) inputdata		! read name of file with FloS-input fields
 read(io, *) maxiter_correct ! number of iterations for gradient correction
 read(io, *) gradient_scheme	! scheme for gradient computation
 read(io, *) div_mode		! scheme for divergency computation
-read(io, *) mode			! way of calc. of opranors
+read(io, *) mode			! way of calc. of oprators
 read(io, *) Re				! Reynolds number
 read(io, *) Pr				! Prandtl number
 read(io, *) maxiter			! maxiter for solving conv-dif eq
@@ -106,14 +106,8 @@ end select
 
 !=== CALCULATE GRADIENT ===
 write(*,*) 'Calculate gradient'
-select case (gradient_scheme)
-	case (1)	
-		do k = 1, maxiter_correct
-			call calcgrad_greengauss(NI, NJ, p, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
-		end do
-	case (2)
-		call calcgrad_leastsquare(NI, NJ, p, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
-end select
+call calcgrad_choice_scheme(ni, nj, gradient_scheme, maxiter_correct, p, grad, cellvolume, cellcenter, &
+							iface_center, iface_vector, jface_center, jface_vector)
 
 !=== Calculate divergency ===
 write(*,*) 'Calculate divergency'
@@ -139,12 +133,17 @@ call output_fields(io, NI, NJ, x, y, p, grad, graderror, v, div, diverror, rot, 
 close(io)
 
 !=== SOLVING EQUATION ===
-write(*,*) 'Calculate temperature field'
-call Solver(ni, nj, v, t, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector, Re, Pr, eps, maxiter)
+if (mode == 1) then
+	
+	write(*,*) 'Calculate temperature field'
+	call Solver(ni, nj, v, t, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector, &
+				Re, Pr, eps, maxiter, mode, gradient_scheme, maxiter_correct)
 
-write(*,*) 'Output field of temperature to file: ', outputfile_temp
-open(io, file = outputfile_temp)
-call output_temperature(io, ni, nj, x, y, t)
-close(io)
+	write(*,*) 'Output field of temperature to file: ', outputfile_temp
+	open(io, file = outputfile_temp)
+	call output_temperature(io, ni, nj, x, y, t)
+	close(io)
+	
+end if
 
 end program main

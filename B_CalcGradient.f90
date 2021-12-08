@@ -122,3 +122,23 @@ do while (Norm2(x_new - x) >= eps)
 end do
 
 end subroutine
+
+! Choice of Grad Scheme
+subroutine calcgrad_choice_scheme(ni, nj, gradient_scheme, maxiter_correct, p, grad, cellvolume, cellcenter, &
+								  iface_center, iface_vector, jface_center, jface_vector)
+
+integer :: ni, nj, gradient_scheme, maxiter_correct
+real(8) :: p(0:NI, 0:NJ), grad(0:NI, 0:NJ, 2), cellvolume(NI-1, NJ-1), cellcenter(0:NI, 0:NJ, 2), &
+			 iface_center(NI, NJ-1, 2), iface_vector(NI, NJ-1, 2), jface_center(NI-1, NJ, 2), jface_vector(NI-1, NJ, 2)
+
+grad = 0.0
+select case (gradient_scheme)
+	case (1)
+		do k = 1, maxiter_correct
+			call calcgrad_greengauss(ni, nj, p, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
+		end do
+	case (2)
+		call calcgrad_leastsquare(ni, nj, p, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
+end select
+
+end subroutine
