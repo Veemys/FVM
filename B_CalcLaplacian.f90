@@ -30,8 +30,8 @@ do j = 1, NJ - 1
 			
 			if (d2 < 1e-7) then
 				gradinterpol(:) = grad(icell, jcell, :)
-				dp_dn_face = 5.0 / 3.0 * (p(icell, jcell) - p(i, j)) / Norm2(vectorcell_cell(:)) - &
-							 2.0 / 3.0 * dot_product(grad(i, j, :), ivec_face(:)) + &
+				dp_dn_face = 5.0 / 3.0 * (p(icell, jcell) - p(i, j)) / Norm2(vectorcell_cell(:)) &
+							 - 2.0 / 3.0 * dot_product(grad(i, j, :), ivec_face(:)) + &
 							 dot_product(ivec_face(:) - ivec_cell(:), gradinterpol(:))
 			else
 				gradinterpol(1) = linear_interpolation(d1, d2, grad(i, j, 1), grad(icell, jcell, 1))

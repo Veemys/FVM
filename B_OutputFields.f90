@@ -28,6 +28,7 @@ write(io, '(100F25.17)') graderror(1:NI-1, 1:NJ-1, 2)
 end subroutine
 
 ! out temp field
+
 subroutine output_temperature(io, ni, nj, x, y, t)
 implicit none
 

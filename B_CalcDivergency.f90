@@ -29,16 +29,22 @@ do j = 1, NJ - 1
 			
 			select case (mode)
 			
-				case (0) 																				! Velocity divergency
+				! velocity divergency
+				
+				case (0)
 				
 					div(i, j) = div(i, j) + dot_product(vface(:), vectorface_cell(iface, :))
 					
-				case(1)																					! Central scheme
+				! Central scheme
+					
+				case(1)
 				
 					pface = linear_interpolation(d1, d2, p(i, j), p(icell, jcell))
 					div(i, j) = div(i, j) + dot_product(pface * vface(:), vectorface_cell(iface, :))
 					
-				case(2)																					! 1st upwind
+				! 1st upwind
+					
+				case(2)
 				
 					Gface = dot_product(vface(:), vectorface_cell(iface, :))
 					if (Gface >= 0.0) then
@@ -49,7 +55,9 @@ do j = 1, NJ - 1
 					end if
 					div(i, j) = div(i, j) + dot_product(pface * vface(:), vectorface_cell(iface, :))
 					
-				case(3)																					! 2st upwind
+				! 2st upwind
+					
+				case(3)
 				
 					Gface = dot_product(vface(:), vectorface_cell(iface, :))
 					d1_vec(:) = centerface_cell(iface, :) - cellcenter(i, j, :)

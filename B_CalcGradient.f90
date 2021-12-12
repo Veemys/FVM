@@ -1,4 +1,5 @@
-! Calculation of the gradient field via Green-Gauss method
+! calculation of the gradient field via Green-Gauss method
+
 subroutine calcgrad_greengauss(NI, NJ, p, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
 implicit none
 
@@ -43,7 +44,8 @@ end do
 
 end subroutine
 
-! Calculation of the gradient field via least square method
+! calculation of the gradient field via least square method
+
 subroutine calcgrad_leastsquare(NI, NJ, p, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
 implicit none
 
@@ -88,6 +90,7 @@ end do
 end subroutine
 
 ! Gauss-Seidel method
+
 subroutine gaussseidel_method(n, A, b, eps, x)
 implicit none
 
@@ -123,7 +126,8 @@ end do
 
 end subroutine
 
-! Choice of Grad Scheme
+! choice of Grad Scheme
+
 subroutine calcgrad_choice_scheme(ni, nj, gradient_scheme, maxiter_correct, p, grad, cellvolume, cellcenter, &
 								  iface_center, iface_vector, jface_center, jface_vector)
 

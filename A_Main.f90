@@ -1,17 +1,18 @@
 program main
 implicit none
 
-integer 								:: i, j, k, NI, NJ, dradCorrectIter, maxiter_correct, gradient_scheme, div_mode, mode, maxiter
-integer, parameter 						:: io = 12 												! input-output unit
-character(*), parameter 				:: inputfile = 'input.txt', outputfile = 'data.plt', outputfile_temp = 'Tfield.plt'		! names of input and output files
-character 								:: meshfile * 30, inputdata * 30, ctmp   				! name of file with computational mesh
+integer 								:: i, j, k, ni, nj, dradCorrectIter, maxiter_correct, gradient_scheme, div_mode, mode, maxiter
+integer, parameter 						:: io = 12
+character(*), parameter 				:: inputfile = 'input.txt', outputfile = 'data.plt', outputfile_temp = 'Tfield.plt'
+character 								:: meshfile * 30, inputdata * 30, ctmp
 real(8) 								:: pressure, velocity, calcgrad_exact, calcdiv_exact, calcrot_exact, calclaplacian_exact, rtmp, Re, Pr, eps
 real(8), allocatable, dimension(:,:) 	:: x, y, p, t, cellvolume, div, divexact, diverror, rot, rotexact, roterror, &
 										   laplacian, laplacianexact, laplacianerror
 real(8), allocatable, dimension(:,:,:) 	:: v, grad, gradexact, graderror
 real(8), allocatable, dimension(:,:,:) 	:: cellcenter, iface_center, iface_vector, jface_center, jface_vector
 
-!===  READ INPUT FILE ===
+! read input file
+
 write(*,*) 'Read input file: ', inputfile
 open(io, file = inputfile)
 read(io, *) meshfile  		! read name of file with computational mesh
@@ -26,13 +27,15 @@ read(io, *) maxiter			! maxiter for solving conv-dif eq
 read(io, *) eps				! accurance for solving conv-dif eq
 close(io)
 
-!===   READ NODES NUMBER (NI,NJ) FROM FILE WITH MESH ===
+! read nodes number (ni, nj) from file with mesh
+
 write(*,*) 'Read nodes number from file: ', meshfile
 open(io, file = meshfile)
 read(io, *) ni, nj
 write(*,*) 'NI, NJ = ', ni, nj
 
-!=== ALLOCATE ALL ARRAYS ===
+! allocate all arrays
+
 write(*,*) 'Allocate arrays'       
 allocate(x(NI, NJ)) 					! mesh nodes X-coordinates
 allocate(y(NI, NJ))						! mesh nodes Y-coordinates
@@ -58,7 +61,8 @@ allocate(iface_vector(NI, NJ-1, 2)) 	! Face Vectors for I-faces
 allocate(jface_center(NI-1, NJ, 2)) 	! Face Centers for J-faces
 allocate(jface_vector(NI-1, NJ, 2)) 	! Face Vectors for J-faces
 
-!===  READ GRID, CALCULATE METRIC, INITIATE FIELDS ===
+! read grid, calculate metric, initiate fields
+
 write(*,*) 'Read mesh from file: ', meshfile
 
 select case(mode)
@@ -104,35 +108,43 @@ select case(mode)
 
 end select
 
-!=== CALCULATE GRADIENT ===
+! calculate gradient
+
 write(*,*) 'Calculate gradient'
 call calcgrad_choice_scheme(ni, nj, gradient_scheme, maxiter_correct, p, grad, cellvolume, cellcenter, &
 							iface_center, iface_vector, jface_center, jface_vector)
 
-!=== Calculate divergency ===
+! calculate divergency
+
 write(*,*) 'Calculate divergency'
 call calcdiv(NI, NJ, v, p, div, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector, div_mode)
 
-!=== Calculate rotor ===
+! calculate rotor
+
 write(*,*) 'Calculate rotor'
 call calcrot(NI, NJ, v, rot, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
+
+! calculate laplacian
 
 write(*,*) 'Calculate laplacian'
 call calclaplacian(NI, NJ, p, grad, laplacian, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
 
-!=== Calculate errors ===
+! calculate errors
+
 call calcgrad_error(NI, NJ, grad, gradexact, graderror)
 call calcdiv_error(NI, NJ, div, divexact, diverror)
 call calcrot_error(NI, NJ, rot, rotexact, roterror)
 call calclaplacian_error(NI, NJ, laplacian, laplacianexact, laplacianerror)
 
-!=== OUTPUT FIELDS ===
+! output field
+
 write(*,*) 'Output fields to file: ', outputfile
 open(io, file = outputfile)
 call output_fields(io, NI, NJ, x, y, p, grad, graderror, v, div, diverror, rot, roterror, laplacian, laplacianerror)
 close(io)
 
-!=== SOLVING EQUATION ===
+! solving equation
+
 if (mode == 1) then
 	
 	write(*,*) 'Calculate temperature field'
