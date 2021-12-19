@@ -12,7 +12,6 @@ real(8), allocatable, dimension(:,:,:) 	:: v, grad, gradexact, graderror
 real(8), allocatable, dimension(:,:,:) 	:: cellcenter, iface_center, iface_vector, jface_center, jface_vector
 
 ! read input file
-
 write(*,*) 'Read input file: ', inputfile
 open(io, file = inputfile)
 read(io, *) meshfile  		! read name of file with computational mesh
@@ -28,14 +27,12 @@ read(io, *) eps				! accurance for solving conv-dif eq
 close(io)
 
 ! read nodes number (ni, nj) from file with mesh
-
 write(*,*) 'Read nodes number from file: ', meshfile
 open(io, file = meshfile)
 read(io, *) ni, nj
 write(*,*) 'NI, NJ = ', ni, nj
 
 ! allocate all arrays
-
 write(*,*) 'Allocate arrays'       
 allocate(x(NI, NJ)) 					! mesh nodes X-coordinates
 allocate(y(NI, NJ))						! mesh nodes Y-coordinates
@@ -62,7 +59,6 @@ allocate(jface_center(NI-1, NJ, 2)) 	! Face Centers for J-faces
 allocate(jface_vector(NI-1, NJ, 2)) 	! Face Vectors for J-faces
 
 ! read grid, calculate metric, initiate fields
-
 write(*,*) 'Read mesh from file: ', meshfile
 
 select case(mode)
@@ -109,47 +105,40 @@ select case(mode)
 end select
 
 ! calculate gradient
-
 write(*,*) 'Calculate gradient'
 call calcgrad_choice_scheme(ni, nj, gradient_scheme, maxiter_correct, p, grad, cellvolume, cellcenter, &
 							iface_center, iface_vector, jface_center, jface_vector)
 
 ! calculate divergency
-
 write(*,*) 'Calculate divergency'
 call calcdiv(NI, NJ, v, p, div, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector, div_mode)
 
 ! calculate rotor
-
 write(*,*) 'Calculate rotor'
 call calcrot(NI, NJ, v, rot, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
 
 ! calculate laplacian
-
 write(*,*) 'Calculate laplacian'
 call calclaplacian(NI, NJ, p, grad, laplacian, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
 
 ! calculate errors
-
 call calcgrad_error(NI, NJ, grad, gradexact, graderror)
 call calcdiv_error(NI, NJ, div, divexact, diverror)
 call calcrot_error(NI, NJ, rot, rotexact, roterror)
 call calclaplacian_error(NI, NJ, laplacian, laplacianexact, laplacianerror)
 
 ! output field
-
 write(*,*) 'Output fields to file: ', outputfile
 open(io, file = outputfile)
 call output_fields(io, NI, NJ, x, y, p, grad, graderror, v, div, diverror, rot, roterror, laplacian, laplacianerror)
 close(io)
 
 ! solving equation
-
 if (mode == 1) then
 	
 	write(*,*) 'Calculate temperature field'
 	call Solver(ni, nj, v, t, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector, &
-				Re, Pr, eps, maxiter, mode, gradient_scheme, maxiter_correct)
+				Re, Pr, eps, maxiter, div_mode, gradient_scheme, maxiter_correct)
 
 	write(*,*) 'Output field of temperature to file: ', outputfile_temp
 	open(io, file = outputfile_temp)

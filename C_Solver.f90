@@ -9,7 +9,7 @@ real(8) 	:: v(0:ni, 0:nj, 2), t(0:ni, 0:nj), R_m(0:ni, 0:nj), div(0:ni, 0:nj), g
 			   iface_center(ni, nj-1, 2), iface_vector(ni, nj-1, 2), jface_center(ni-1, nj, 2), jface_vector(ni-1, nj, 2)
 
 D = 1.0 / Re / Pr
-dt = 0.02
+dt = 0.002
 t(0:ni, 0:nj) = 0.5
 R_m(0:ni, 0:nj) = 1.0
 iter = 0
@@ -46,7 +46,6 @@ end do
 end subroutine
 
 ! boundary conditions
-
 subroutine bound_cond(ni, nj, t)
 implicit none
 
@@ -66,7 +65,6 @@ t(0, :) = 0.0
 end subroutine
 
 ! choice of time step
-
 subroutine choice_time_step(i, j, ni, nj, v, D, cellvolume, cellcenter, iface_center, iface_vector, jface_center, jface_vector, dt)
 implicit none
 
@@ -102,6 +100,3 @@ dt_diff = VNM / (2.0 * sum2)
 dt = 1.0 / (1.0 / dt_conv + 1.0 / dt_diff)
 
 end subroutine
-
-! smoothing residuals
-
