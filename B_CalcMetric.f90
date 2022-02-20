@@ -1,4 +1,4 @@
-subroutine calcmetric(NI, NJ, x, y, cellcenter, cellvolume, iface_center, iface_vector, jface_center, jface_vector)
+subroutine calc_metric(NI, NJ, x, y, cellcenter, cellvolume, iface_center, iface_vector, jface_center, jface_vector)
 implicit none
 
 integer :: i, j, NI, NJ, nbound, ibound, iout, jbound, jout
