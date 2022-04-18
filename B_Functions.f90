@@ -169,6 +169,22 @@ linear_interpolation = (x1 * d2 + x2 * d1) / (d1 + d2)
 end function
 
 ! information about given cell
+
+!
+!  -------------2--------------
+!  |                          |
+!  |                          |
+!  |                          |
+!  |                          |
+!  1                          3
+!  |                          |
+!  |                          |
+!  |                          |
+!  |                          |
+!  -------------4--------------
+!
+
+
 subroutine cell_information(i, j, ni, nj, cellcenter, iface_center, iface_vector, jface_center, jface_vector, &
 							ncell, centerneigh_cell, centerface_cell, vectorface_cell)
 implicit none
