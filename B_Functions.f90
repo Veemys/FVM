@@ -1,4 +1,4 @@
-! function of pressure
+!************************************function of pressure
 real(8) function pressure(x, y)
 implicit none
 
@@ -11,7 +11,7 @@ pressure = x**4.0 + y**4.0
 
 end function
 
-! function of velocity
+!************************************function of velocity
 real(8) function velocity(x, y, coord)
 implicit none
 
@@ -30,7 +30,7 @@ end if
 
 end function 
 
-! calculation of exact values of gradient
+!************************************calculation of exact values of gradient
 real(8) function calcgrad_exact(x, y, coord)
 implicit none
 
@@ -51,7 +51,7 @@ end if
 
 end function
 
-! calculation of exact values of divergency
+!************************************calculation of exact values of divergency
 real(8) function calcdiv_exact(x, y, p, v, grad, mode)
 implicit none
 
@@ -68,7 +68,7 @@ end select
 
 end function
 
-! calculation of exact values of rotor
+!************************************calculation of exact values of rotor
 real(8) function calcrot_exact(x, y)
 implicit none
 
@@ -78,7 +78,7 @@ calcrot_exact = 3.0 * (x**2 + y**2) ! dVy/dx - dVx/dy
 
 end function
 
-! calculation of exact values of laplacian
+!************************************calculation of exact values of laplacian
 real(8) function calclaplacian_exact(x, y)
 implicit none
 
@@ -90,7 +90,7 @@ calclaplacian_exact = 12.0 * (x**2 + y**2)
 
 end function
 
-! calculation of error of gradient
+!************************************calculation of error of gradient
 subroutine calcgrad_error(NI, NJ, grad, gradexact, graderror)
 implicit none
 
@@ -107,7 +107,7 @@ print*, 'Max Error of Gradient =', maxval(graderror(1:NI-1, 1:NJ-1, :))
 
 end subroutine
 
-! calculation of error of divergency
+!************************************calculation of error of divergency
 subroutine calcdiv_error(NI, NJ, div, divexact, diverror)
 implicit none
 
@@ -124,7 +124,7 @@ print*, 'Max Error of Divergency =', maxval(diverror(1:NI-1, 1:NJ-1))
 
 end subroutine
 
-! calculation of error of rotor
+!************************************calculation of error of rotor
 subroutine calcrot_error(NI, NJ, rot, rotexact, roterror)
 implicit none
 
@@ -141,7 +141,7 @@ print*, 'Max Error of Rotor =', maxval(roterror(1:NI-1, 1:NJ-1))
 
 end subroutine
 
-! calculation of error of laplacian
+!************************************calculation of error of laplacian
 subroutine calclaplacian_error(NI, NJ, laplacian, laplacianexact, laplacianerror)
 implicit none
 
@@ -158,7 +158,7 @@ print*, 'Max Error of Laplacian =', maxval(laplacianerror(1:NI-1, 1:NJ-1))
 
 end subroutine
 
-! linear interpolation
+!************************************linear interpolation
 real(8) function linear_interpolation(d1, d2, x1, x2)
 implicit none
 
@@ -168,7 +168,7 @@ linear_interpolation = (x1 * d2 + x2 * d1) / (d1 + d2)
 
 end function
 
-! information about given cell
+!************************************information about given cell
 
 !
 !  -------------2--------------
@@ -224,3 +224,13 @@ vectorface_cell(3, :) = iface_vector(i+1, j, :)
 vectorface_cell(4, :) = - jface_vector(i, j, :)
 
 end subroutine
+
+!************************************************************************
+real(8) function calc_abs_vector(vect)
+	implicit none
+
+	real(8) :: vect(2)
+
+	calc_abs_vector = sqrt(vect(1)**2 + vect(2)**2)
+
+end function

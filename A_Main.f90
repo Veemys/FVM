@@ -124,31 +124,34 @@ read(io, *) dt 					! time step
 read(io, *) nt 					! number of time step
 close(io)
 
+
+! calculate gradient
+write(*, *) 'Calculate gradient...'
+call calcgrad_choice_scheme(ni, nj, gradient_scheme, maxiter_correct, p, grad, cellvolume, cellcenter, &
+							iface_center, iface_vector, jface_center, jface_vector)
+write(*, *) 'COMPLETE!'
+
+! calculate divergency
+write(*, *) 'Calculate divergency...'
+call calcdiv(NI, NJ, v, p, div, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector, div_mode)
+write(*, *) 'COMPLETE!'
+
+! calculate rotor
+write(*, *) 'Calculate rotor...'
+call calcrot(NI, NJ, v, rot, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
+write(*, *) 'COMPLETE!'
+
+! calculate laplacian
+write(*, *) 'Calculate laplacian...'
+call calclaplacian(NI, NJ, p, grad, laplacian, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
+write(*, *) 'COMPLETE!'
+
+
 write(*, *) 'Finding particle traectory...'
 call solver_part(rho_part, d_part, x_0_part, y_0_part, u_0_part, v_0_part, omega_0_part, rho_envi, x, y, v, &
 				cellvolume, iface_vector, jface_vector, dt, nt, ni, nj, mu, &
-				x_part, y_part, u_part, v_part, omega_part, i_part, j_part)
-
-! ! calculate gradient
-! write(*, *) 'Calculate gradient...'
-! call calcgrad_choice_scheme(ni, nj, gradient_scheme, maxiter_correct, p, grad, cellvolume, cellcenter, &
-							! iface_center, iface_vector, jface_center, jface_vector)
-! write(*, *) 'COMPLETE!'
-
-! ! calculate divergency
-! write(*, *) 'Calculate divergency...'
-! call calcdiv(NI, NJ, v, p, div, grad, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector, div_mode)
-! write(*, *) 'COMPLETE!'
-
-! ! calculate rotor
-! write(*, *) 'Calculate rotor...'
-! call calcrot(NI, NJ, v, rot, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
-! write(*, *) 'COMPLETE!'
-
-! ! calculate laplacian
-! write(*, *) 'Calculate laplacian...'
-! call calclaplacian(NI, NJ, p, grad, laplacian, cellvolume, cellcenter, iface_center, jface_center, iface_vector, jface_vector)
-! write(*, *) 'COMPLETE!'
+				x_part, y_part, u_part, v_part, omega_part, i_part, j_part, &
+				rot, grad)
 
 ! calculate errors
 ! call calcgrad_error(NI, NJ, grad, gradexact, graderror)
