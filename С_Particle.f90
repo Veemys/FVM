@@ -1,4 +1,4 @@
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 subroutine solver_part(rho_part, d_part, x_0_part, y_0_part, u_0_part, v_0_part, omega_0_part, rho_envi, x, y, v, &
 	cellvolume, iface_vector, jface_vector, dt, nt, ni, nj, mu, &
 	x_part, y_part, u_part, v_part, omega_part, i_part, j_part, &
@@ -19,11 +19,10 @@ subroutine solver_part(rho_part, d_part, x_0_part, y_0_part, u_0_part, v_0_part,
 	real(8) :: u_part_old, v_part_old, u_envi_old, v_envi_old
 	real(8) :: calc_abs_vector				! functions
 
-	! v_ref = 0.05
-	! l_ref = 0.1
-
-	! Sk = rho_part * d_part**2 * v_ref / (mu * l_ref)
-	! print*, 'Stokes number = ', Sk
+	v_ref = 0.05
+	l_ref = 0.05
+	Sk = rho_part * d_part**2 * v_ref / (mu * l_ref)
+	print*, 'Stokes number = ', Sk
 
 	open(io_trac, file = 'part_trac.plt')
 	write(io_trac,*) 'VARIABLES = "X", "Y"'
@@ -64,7 +63,7 @@ subroutine solver_part(rho_part, d_part, x_0_part, y_0_part, u_0_part, v_0_part,
 	v_rel(0, 2) = v_envi - v_part
 
 	call write_part_trac(x_part, y_part, io_trac)
-	call write_forces(dt - dt, F_Stokes, F_Buoyancy, F_Magnus, F_Saffman, F_Basset, F_Add_mass, F_x, F_y, io_forces, &
+	call write_forces(dt, F_Stokes, F_Buoyancy, F_Magnus, F_Saffman, F_Basset, F_Add_mass, F_x, F_y, io_forces, &
 		i_part_old, j_part_old, i_part, j_part)
 
 	do iter = 1, nt
@@ -103,7 +102,7 @@ subroutine solver_part(rho_part, d_part, x_0_part, y_0_part, u_0_part, v_0_part,
 				x_part_new, y_part_new, u_part_new, v_part_new, omega_part_new, x_cross, y_cross, ip1, jp1, St, &
 				x_part_reflect, y_part_reflect)
 			!write(*,*) 'u_new = ', u_part_new, 'v_new = ', v_part_new
-			call write_part_trac(x_part, y_part, io_trac)
+			call write_part_trac(x_cross, y_cross, io_trac)
 			!call write_forces(iter * dt, F_Stokes, F_Buoyancy, F_Magnus, F_Saffman, F_Basset, F_Add_mass, F_x, F_y, io_forces, &
 			!	i_part_old, j_part_old, i_part, j_part)
 
@@ -130,6 +129,7 @@ subroutine solver_part(rho_part, d_part, x_0_part, y_0_part, u_0_part, v_0_part,
 		u_part = u_part_new
 		v_part = v_part_new
 		omega_part = omega_part_new
+
 		call write_part_trac(x_part, y_part, io_trac)
 		call write_forces(iter * dt, F_Stokes, F_Buoyancy, F_Magnus, F_Saffman, F_Basset, F_Add_mass, F_x, F_y, io_forces, &
 			i_part_old, j_part_old, i_part, j_part)
@@ -145,7 +145,7 @@ subroutine solver_part(rho_part, d_part, x_0_part, y_0_part, u_0_part, v_0_part,
 
 end subroutine
 
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 subroutine find_part_location(x_part, y_part, ni, nj, x, y, cellvolume, i_part, j_part)
 	implicit none
 
@@ -154,7 +154,7 @@ subroutine find_part_location(x_part, y_part, ni, nj, x, y, cellvolume, i_part, 
 
 	i_part = - 1
 	j_part = - 1
-	eps = 1e-10
+	eps = 1e-13
 
 	do j = 1, nj - 1
 		do i = 1, ni - 1
@@ -175,7 +175,7 @@ subroutine find_part_location(x_part, y_part, ni, nj, x, y, cellvolume, i_part, 
 		
 end subroutine
 
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 subroutine C_Boundary(x, y, iface_vector, jface_vector, ni, nj, x_part, y_part, u_part, v_part, omega_part, d_part, &
 						x_part_new, y_part_new, u_part_new, v_part_new, omega_part_new, x_cross, y_cross, ip1, jp1, St, &
 						x_part_reflect, y_part_reflect)
@@ -235,7 +235,7 @@ subroutine C_Boundary(x, y, iface_vector, jface_vector, ni, nj, x_part, y_part, 
 
 	end subroutine
 
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 subroutine cross_edges(x_part, y_part, x_part_new, y_part_new, x1, y1, x2, y2, x_cross, y_cross, icr)
 	implicit none
 
@@ -263,7 +263,7 @@ subroutine cross_edges(x_part, y_part, x_part_new, y_part_new, x1, y1, x2, y2, x
 
 end subroutine
 
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 subroutine calc_force(nt, dt, iter, ni, nj, i_part, j_part, rho_envi, rho_part, mu, d_part, u_part, v_part, omega_part, &
 	u_envi, v_envi, v_rel, rotV, gradP, F_x, F_y, M_z, &
 	u_part_old, v_part_old, u_envi_old, v_envi_old, &
@@ -349,7 +349,7 @@ subroutine calc_force(nt, dt, iter, ni, nj, i_part, j_part, rho_envi, rho_part, 
 
 end subroutine
 
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 subroutine reflect(x_part, y_part, x_part_new, y_part_new, x_part_reflect, y_part_reflect, x1, y1, x2, y2)
 	implicit none
 
@@ -365,7 +365,7 @@ subroutine reflect(x_part, y_part, x_part_new, y_part_new, x_part_reflect, y_par
 
 end subroutine
 
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 subroutine calc_velo_after_reflect(x1, y1, x2, y2, u_old, v_old, omega_old, u_new, v_new, omega_new, d_part)
 	implicit none
 
@@ -385,28 +385,28 @@ subroutine calc_velo_after_reflect(x1, y1, x2, y2, u_old, v_old, omega_old, u_ne
 
 ! ********** simple model **********
 
-	u_new = (u_old * tau_x + v_old * tau_y) * tau_x - (u_old * n_x + v_old * n_y) * n_x
-	v_new = (u_old * tau_x + v_old * tau_y) * tau_y - (u_old * n_x + v_old * n_y) * n_y
-	omega_new = 0.0
+	! u_new = (u_old * tau_x + v_old * tau_y) * tau_x - (u_old * n_x + v_old * n_y) * n_x
+	! v_new = (u_old * tau_x + v_old * tau_y) * tau_y - (u_old * n_x + v_old * n_y) * n_y
+	! omega_new = 0.0
 
 ! ********** improved model **********
 
-	! U_x = - u_old
-	! U_y = - v_old
+	U_x = u_old
+	U_y = v_old
 
-	! U_c_x = U_x - d_part / 2.0 * omega_old * n_y
-	! U_c_y = U_y + d_part / 2.0 *  omega_old * n_x
+	U_c_x = U_x - d_part / 2.0 * omega_old * n_y
+	U_c_y = U_y + d_part / 2.0 *  omega_old * n_x
 
-	! U_ct_x = U_c_x - (U_c_x * n_x + U_c_y * n_y) * n_x
-	! U_ct_y = U_c_y - (U_c_x * n_x + U_c_y * n_y) * n_y
+	U_ct_x = U_c_x - (U_c_x * n_x + U_c_y * n_y) * n_x
+	U_ct_y = U_c_y - (U_c_x * n_x + U_c_y * n_y) * n_y
 
-	! u_new = u_old + ((1 + e) * (U_x * n_x + U_y * n_y) * n_x + 2.0 / 7.0 * sqrt(U_ct_x**2 + U_ct_y**2) * tau_x)
-	! v_new = v_old + ((1 + e) * (U_x * n_x + U_y * n_y) * n_y + 2.0 / 7.0 * sqrt(U_ct_x**2 + U_ct_y**2) * tau_y)
-	! omega_new = omega_old - 5.0 / (7.0 * d_part / 2.0) * sqrt(U_ct_x**2 + U_ct_y**2) * (n_x * tau_y - n_y * tau_x)
+	u_new = u_old - ((1 + e) * (U_x * n_x + U_y * n_y) * n_x + 2.0 / 7.0 * sqrt(U_ct_x**2 + U_ct_y**2) * tau_x)
+	v_new = v_old - ((1 + e) * (U_x * n_x + U_y * n_y) * n_y + 2.0 / 7.0 * sqrt(U_ct_x**2 + U_ct_y**2) * tau_y)
+	omega_new = omega_old - 5.0 / (7.0 * d_part / 2.0) * sqrt(U_ct_x**2 + U_ct_y**2) * (n_x * tau_y - n_y * tau_x)
 
 end subroutine
 
-!!*******************************************************************************************************************************
+!*******************************************************************************************************************************
 subroutine write_part_trac(x_part, y_part, io)
 	implicit none
 
@@ -417,7 +417,7 @@ subroutine write_part_trac(x_part, y_part, io)
 
 end subroutine
 
-!!*******************************************************************************************************************************
+!*******************************************************************************************************************************
 subroutine write_forces(t, F_Stokes, F_Buoyancy, F_Magnus, F_Saffman, F_Basset, F_Add_mass, F_x, F_y, io, &
 	i_part_old, j_part_old, i_part, j_part)
 	implicit none
@@ -434,7 +434,7 @@ subroutine write_forces(t, F_Stokes, F_Buoyancy, F_Magnus, F_Saffman, F_Basset, 
 
 end subroutine
 
-!!*******************************************************************************************************************************
+!*******************************************************************************************************************************
 subroutine calc_integral_basset_force(iter, nt, dt, v_rel, integral_basset_force)
 	implicit none
 
@@ -451,7 +451,7 @@ subroutine calc_integral_basset_force(iter, nt, dt, v_rel, integral_basset_force
 
 end subroutine
 
-!!*****************************************************************************************************************************
+!*****************************************************************************************************************************
 real(8) function triang_square(x1, y1, x2, y2, x3, y3)
 	implicit none
 

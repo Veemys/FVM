@@ -1,8 +1,8 @@
-1.2754 2000.0   ! density enviroment and particle
-1.78e-5 		! enviroment viscosity
-0.0005 			! particle's diameter
+1.25 2000.0   ! density enviroment and particle
+2e-005 		! enviroment viscosity
+0.001 			! particle's diameter    0.000005   0.0003  0.00316226
 0.0 0.02 	    ! initial position of particle
-0.3 0.2 	    ! initial velocity of particle
+0.1 -0.3 	    ! initial velocity of particle
 0.0 		    ! initial circular velocity of particle
-0.002 			! time step
-6000	 			! number of time step
+0.005 			! time step     0.005   0.0001
+100000	 			! number of time step
